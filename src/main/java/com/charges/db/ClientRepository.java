@@ -19,11 +19,11 @@ public interface ClientRepository {
     @Select("SELECT * FROM client WHERE id=#{clientId}")
     Client getClient(@Param("clientId") final Long clientId);
 
-    @Insert("INSERT into client (name) values (#{name})")
+    @Insert("INSERT into client (number) values (#{number})")
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     void insert(final Client client);
 
-    @Update("UPDATE client SET name=#{name} where id=#{id}")
+    @Update("UPDATE client SET number=#{number} where id=#{id}")
     void update(final Client client);
 
     @Delete("DELETE client where id=#{clientId}")

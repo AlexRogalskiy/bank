@@ -1,6 +1,8 @@
 package com.charges;
 
+import com.charges.controller.AccountController;
 import com.charges.controller.ClientController;
+import com.charges.service.AccountService;
 import com.charges.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,6 +27,7 @@ public class ChargesApp {
             protected void initialize() {
                 install(JdbcHelper.HSQLDB_Embedded);
                 bind(ClientService.class);
+                bind(AccountService.class);
                 bind(ObjectMapper.class)
                         .toProvider(ObjectMapperProvider.class)
                         .in(Singleton.class);
@@ -34,8 +37,8 @@ public class ChargesApp {
 
     public static void main(String[] args) {
         final var spark = Service.ignite().port(8080);
-
         serviceInit.getInstance(ClientController.class).configure(spark);
+        serviceInit.getInstance(AccountController.class).configure(spark);
         spark.awaitInitialization();
 
     }
