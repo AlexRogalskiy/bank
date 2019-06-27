@@ -2,7 +2,7 @@ package com.charges.service;
 
 import com.charges.db.AccountRepository;
 import com.charges.model.Account;
-import com.charges.model.Client;
+
 import com.charges.validation.AccountValidation;
 import com.google.inject.Inject;
 import org.mybatis.guice.transactional.Transactional;
@@ -14,15 +14,14 @@ import static spark.Spark.halt;
 
 @Singleton
 public class AccountService {
-    public static final String RESPONSE_EXCEPTION = "{\"errorMessage\":\"%s\"}";
-
     @Inject
     private AccountRepository accountRepository;
+
     @Inject
     private ClientService clientService;
 
-    public Account getAccountByName(final String accountName) {
-        return accountRepository.getAccountByName(accountName);
+    public Account getAccountByNumber(final String accountNumber) {
+        return accountRepository.getAccountByNumber(accountNumber);
     }
 
     public void updateBalance(final Long accountId, final BigDecimal balance) {
@@ -33,7 +32,7 @@ public class AccountService {
     public Account insertAccount(final String clientId, final AccountValidation accountValidation) {
         final var selectedClient = clientService.getClient(clientId);
         if (selectedClient == null) {
-            halt(422, String.format(RESPONSE_EXCEPTION, "Client not found"));
+            halt(400, "Client not found");
         }
         final var account = Account.builder()
                 .number(accountValidation.getNumber())
@@ -68,10 +67,10 @@ public class AccountService {
     private void validateAccountId(Long clientId, Long accountId) {
         final var selected = accountRepository.selectAccount(accountId);
         if (selected == null) {
-            halt(422, String.format(RESPONSE_EXCEPTION, "Account can`t found"));
+            halt(400, "Account can`t found");
         }
         if (!selected.getClientId().equals(clientId)) {
-            halt(422, String.format(RESPONSE_EXCEPTION, "Account don't belong to the user"));
+            halt(400, "Account don't belong to the user");
         }
     }
 

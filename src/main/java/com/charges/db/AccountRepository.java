@@ -16,7 +16,7 @@ import java.util.List;
 public interface AccountRepository {
 
     @Select("SELECT number FROM account WHERE id=#{accountId}")
-    String getAccountName(@Param("accountId") final Long accountId);
+    String getAccountNumber(@Param("accountId") final Long accountId);
 
     @Select("SELECT * FROM account WHERE client_id=#{clientId}")
     List<Account> getAccounts(@Param("clientId") final Long clientId);
@@ -24,18 +24,18 @@ public interface AccountRepository {
     @Select("SELECT * FROM account WHERE id=#{accountId} FOR UPDATE")
     Account selectForUpdate(@Param("accountId") final Long accountId);
 
-    @Select("SELECT * FROM account WHERE number=#{accountName}")
-    Account getAccountByName(@Param("accountName") final String accountName);
+    @Select("SELECT * FROM account WHERE number=#{accountNumber}")
+    Account getAccountByNumber(@Param("accountNumber") final String accountNumber);
 
     @Select("SELECT * FROM account WHERE id=#{accountId}")
     Account selectAccount(@Param("accountId") final Long accountId);
 
-    @Update("UPDATE account SET total_balance=#{balance} WHERE id=#{accountId}")
+    @Update("UPDATE account SET balance=#{balance} WHERE id=#{accountId}")
     void updateBalance(@Param("accountId") final Long accountId,
                        @Param("balance") final BigDecimal balance);
 
     @Insert("INSERT into account (number, client_id) values (#{number}, #{clientId})")
-    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
+    @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     void insertAccount(final Account account);
 
     @Update("UPDATE account SET number=#{number},client_id= #{clientId}, modified_on=now() where id=#{id}")

@@ -8,22 +8,20 @@ import java.io.StringWriter;
 
 
 public interface DataConverting<T> {
-    ObjectMapper mapper = new ObjectMapper();
-
-    default <V>String convertDataToJson(V data) {
+    default <V> String convertDataToJson(V data, final ObjectMapper mapper) {
         try {
             final var stringWriter = new StringWriter();
             mapper.writeValue(stringWriter, data);
             return stringWriter.toString();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("IOException in convertDataToJson method" + data, e);
         }
     }
 
-    default T converJsonToData(final String json, final Class<T> clazz) {
+    default T converJsonToData(final String json, final Class<T> clazz, final ObjectMapper mapper) {
         try {
             return mapper.readValue(json, clazz);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("IOException in converJsonToData method" + json, e);
         }
     }

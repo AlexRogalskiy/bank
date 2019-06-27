@@ -2,8 +2,11 @@ package com.charges;
 
 import com.charges.controller.AccountController;
 import com.charges.controller.ClientController;
+import com.charges.controller.TransferController;
 import com.charges.service.AccountService;
 import com.charges.service.ClientService;
+import com.charges.service.TransferInnerService;
+import com.charges.service.TransferService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Injector;
@@ -28,6 +31,8 @@ public class ChargesApp {
                 install(JdbcHelper.HSQLDB_Embedded);
                 bind(ClientService.class);
                 bind(AccountService.class);
+                bind(TransferService.class);
+                bind(TransferInnerService.class);
                 bind(ObjectMapper.class)
                         .toProvider(ObjectMapperProvider.class)
                         .in(Singleton.class);
@@ -37,10 +42,11 @@ public class ChargesApp {
 
     public static void main(String[] args) {
         final var spark = Service.ignite().port(8080);
+
         serviceInit.getInstance(ClientController.class).configure(spark);
         serviceInit.getInstance(AccountController.class).configure(spark);
+        serviceInit.getInstance(TransferController.class).configure(spark);
         spark.awaitInitialization();
-
     }
 
     static class ObjectMapperProvider implements Provider<ObjectMapper> {
@@ -48,8 +54,10 @@ public class ChargesApp {
 
         public ObjectMapper get() {
             final var mapper = new ObjectMapper();
+
             mapper.setDateFormat(dateFormat);
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
             return mapper;
         }
     }

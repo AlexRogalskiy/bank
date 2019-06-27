@@ -13,8 +13,6 @@ import static spark.Spark.halt;
 
 @Singleton
 public class ClientService {
-    public static final String RESPONSE_EXCEPTION = "{\"errorMessage\":\"%s\"}";
-
     @Inject
     private ClientRepository clientRepository;
 
@@ -28,7 +26,7 @@ public class ClientService {
 
     @Transactional
     public Client insertClient(final ClientValidation clientValidation) {
-        Client client = Client.builder()
+        final var client = Client.builder()
                 .name(clientValidation.getName())
                 .build();
         clientRepository.insert(client);
@@ -58,7 +56,7 @@ public class ClientService {
     private void validateClientId(final Long clientId) {
         final var selected = clientRepository.getClient(clientId);
         if (selected == null) {
-            halt(422, String.format(RESPONSE_EXCEPTION, "Client not found"));
+            halt(400, "Client not found");
         }
     }
 }
