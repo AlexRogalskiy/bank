@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 
-public interface DataConverting<T> {
+public interface DataJsonConverting<T> {
     default <V> String convertDataToJson(V data, final ObjectMapper mapper) {
         try {
             final var stringWriter = new StringWriter();
@@ -25,6 +25,4 @@ public interface DataConverting<T> {
             throw new RuntimeException("IOException in converJsonToData method" + json, e);
         }
     }
-
-    void configure(final Service spark);
 }

@@ -7,7 +7,7 @@ import spark.Service;
 
 import com.charges.validation.AccountValidation;
 
-public class AccountController implements DataConverting<AccountValidation> {
+public class AccountController implements DataJsonConverting<AccountValidation>, ControllerConfigure {
     @Inject
     private AccountService accountService;
 

@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 
 @Data
 @Builder
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.MODULE)
 @NoArgsConstructor
 public class Transfer {
     private Long id;

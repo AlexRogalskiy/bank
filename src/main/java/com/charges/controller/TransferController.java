@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import spark.Service;
 
-public class TransferController implements DataConverting<TransferValidation> {
+public class TransferController implements DataJsonConverting<TransferValidation>, ControllerConfigure {
     @Inject
     private TransferService transferService;
 

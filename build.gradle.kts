@@ -14,6 +14,7 @@ val h2Version = "1.4.199"
 val transactionApiVersion = "1.3"
 val sparkCoreVersion = "2.8.0"
 val junitVersion = "4.12"
+val mokitoVersion = "1.10.19"
 
 tasks.jar {
     archiveBaseName.set("charges")
@@ -52,6 +53,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     testImplementation("junit:junit:$junitVersion")
+    testImplementation("org.mockito:mockito-all:$mokitoVersion")
 }
 
 tasks.wrapper {

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import spark.Service;
 
-public class ClientController implements DataConverting<ClientValidation> {
+public class ClientController implements DataJsonConverting<ClientValidation>, ControllerConfigure {
     @Inject
     private ClientService clientService;
 
@@ -31,10 +31,5 @@ public class ClientController implements DataConverting<ClientValidation> {
             return convertDataToJson(client, mapper);
         });
 
-        spark.delete("/clients/:clientId", (req, res) -> {
-            clientService
-                    .deleteClient(req.params("clientId"));
-            return "";
-        });
     }
 }

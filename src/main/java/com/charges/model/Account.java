@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.MODULE)
 @NoArgsConstructor
 public class Account {
     private Long id;

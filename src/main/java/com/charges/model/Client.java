@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.MODULE)
 @NoArgsConstructor
 public class Client {
     private Long id;
