@@ -68,12 +68,10 @@ public class IntegrationTest implements DataJsonConvertingForTest {
     public void execute100transfers_10000to10Randomaccounts_checkBalances() throws Exception {
         final var oneMillionAccountFromNumber = "Test99999";
         final var amount = BigDecimal.valueOf(1000000, 2);
-
         final var clientsId = List.of("Vadim", "Alina", "Ivan", "Natalia", "NataliaXXX", "Viktorai", "Aman", "Irina", "Nastja")
                 .stream()
                 .map(this::createClient)
                 .collect(Collectors.toList());
-
         final var accountsId = clientsId
                 .stream()
                 .map(this::createAccount)
@@ -83,8 +81,7 @@ public class IntegrationTest implements DataJsonConvertingForTest {
                 .parallel()
                 .forEach(i -> accountsId.forEach(id -> makeTransfer("1", oneMillionAccountFromNumber, id, amount)));
 
-        Double actualReplenishAccountsSum = clientsId.stream().map(this::getAccountBalance).reduce(0D, Double::sum);
-
+        final Double actualReplenishAccountsSum = clientsId.stream().map(this::getAccountBalance).reduce(0D, Double::sum);
         assertEquals(Double.valueOf(1000000), actualReplenishAccountsSum);
         assertEquals(0D, getAccountBalance("1"), 0.1);
     }
