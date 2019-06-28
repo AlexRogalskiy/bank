@@ -23,12 +23,12 @@ public class TransferService {
     private TransferInnerService transferInnerService;
 
     public List<Transfer> getTransfersByClientId(final String clientId) {
-        return transferRepository.getTransfersByClient(Long.valueOf(clientId));
+        return transferRepository.getTransfersByClientId(Long.valueOf(clientId));
     }
 
     public Transfer getTransferByIdAndClientId(final String clientId, final String transferId) {
         final var transfer = transferRepository
-                .getTransfer(Long.valueOf(clientId), Long.valueOf(transferId));
+                .getTransferByIdAndClientId(Long.valueOf(clientId), Long.valueOf(transferId));
 
         if (transfer == null) halt(400, "Cant find transfer or client");
 
@@ -42,7 +42,7 @@ public class TransferService {
             final var transferId = transferInnerService
                     .createTransfer(Long.valueOf(clientId), transferValidation);
 
-            return transferRepository.getTransfer(Long.valueOf(clientId), transferId);
+            return transferRepository.getTransferByIdAndClientId(Long.valueOf(clientId), transferId);
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -65,7 +65,7 @@ public class TransferService {
 
             transferInnerService.checkAndExecuteTransfer(clientId, transferId);
 
-            return transferRepository.getTransfer(clientId, transferId);
+            return transferRepository.getTransferByIdAndClientId(clientId, transferId);
         } catch (final Exception e) {
             e.printStackTrace();
 

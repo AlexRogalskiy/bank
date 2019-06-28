@@ -17,11 +17,11 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public List<Client> getClients() {
-        return clientRepository.getClients();
+        return clientRepository.getAllClients();
     }
 
     public Client getClientById(final String clientId) {
-        return clientRepository.getClient(Long.valueOf(clientId));
+        return clientRepository.getClientById(Long.valueOf(clientId));
     }
 
     @Transactional
@@ -29,12 +29,12 @@ public class ClientService {
         final var client = Client.builder()
                 .name(clientValidation.getName())
                 .build();
-        clientRepository.insert(client);
-        return clientRepository.getClient(client.getId());
+        clientRepository.addClient(client);
+        return clientRepository.getClientById(client.getId());
     }
 
     private void validateClientId(final Long clientId) {
-        final var selected = clientRepository.getClient(clientId);
+        final var selected = clientRepository.getClientById(clientId);
         if (selected == null) {
             halt(400, "Client not found");
         }

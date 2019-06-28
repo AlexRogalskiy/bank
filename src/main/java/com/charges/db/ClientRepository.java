@@ -10,14 +10,13 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
 @Mapper
 public interface ClientRepository {
     @Select("SELECT * FROM client")
-    List<Client> getClients();
+    List<Client> getAllClients();
 
     @Results(value = {
             @Result(id = true, property = "id", column = "id"),
@@ -26,9 +25,9 @@ public interface ClientRepository {
                     javaType = List.class,
                     many = @Many(select = "com.charges.db.AccountRepository.getAccounts"))})
     @Select("SELECT * FROM client WHERE id=#{clientId}")
-    Client getClient(@Param("clientId") final Long clientId);
+    Client getClientById(@Param("clientId") final Long clientId);
 
     @Insert("INSERT into client (name) values (#{name})")
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
-    void insert(final Client client);
+    void addClient(final Client client);
 }

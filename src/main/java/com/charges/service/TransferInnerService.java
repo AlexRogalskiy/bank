@@ -42,7 +42,7 @@ public class TransferInnerService {
                 .clientId(clientId)
                 .build();
 
-        transferRepository.insert(transfer, fromAccount.getId(), accountNumberTo.getId());
+        transferRepository.addTransfer(transfer, fromAccount.getId(), accountNumberTo.getId());
 
         return transfer.getId();
     }
@@ -50,7 +50,7 @@ public class TransferInnerService {
     @Transactional
     public void checkAndExecuteTransfer(final Long clientId,
                                         final Long transferId) {
-        final var transfer = transferRepository.getTransfer(clientId, transferId);
+        final var transfer = transferRepository.getTransferByIdAndClientId(clientId, transferId);
 
         if (transfer == null) halt(400, "Cant find transfer");
 
