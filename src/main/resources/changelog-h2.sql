@@ -24,7 +24,7 @@ alter table account
 
 insert into account (id, number, balance, client_id)
 values (0, 'Test7777', 555.00, 0),
-       (1, 'Test99999', 100.00, 1),
+       (1, 'Test99999', 1000000.00, 1),
        (2, 'Test33333', 444.00, 2),
        (3, 'Test11111', 555.00, 3);
 

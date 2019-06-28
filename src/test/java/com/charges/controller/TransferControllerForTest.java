@@ -4,6 +4,7 @@ import com.charges.model.Transfer;
 import com.charges.service.TransferService;
 import com.charges.validation.TransferValidation;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,8 +54,8 @@ public class TransferControllerForTest implements DataJsonConvertingForTest, Gen
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(convertDataToJson(expectedList, mapper), response.body());
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(response.body(), Is.is(convertDataToJson(expectedList, mapper)));
     }
 
     @Test
@@ -70,8 +71,8 @@ public class TransferControllerForTest implements DataJsonConvertingForTest, Gen
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(convertDataToJson(expected, mapper), response.body());
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(response.body(), Is.is(convertDataToJson(expected, mapper)));
     }
 
     @Test
@@ -92,8 +93,8 @@ public class TransferControllerForTest implements DataJsonConvertingForTest, Gen
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(convertDataToJson(expected, mapper), response.body());
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(response.body(), Is.is(convertDataToJson(expected, mapper)));
     }
 
     @Test
@@ -109,7 +110,7 @@ public class TransferControllerForTest implements DataJsonConvertingForTest, Gen
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(convertDataToJson(expected, mapper), response.body());
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(response.body(), Is.is(convertDataToJson(expected, mapper)));
     }
 }

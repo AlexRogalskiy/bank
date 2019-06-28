@@ -15,6 +15,7 @@ import com.charges.validation.ClientValidation;
 import com.charges.validation.TransferValidation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Injector;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.inject.Guice.createInjector;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class IntegrationTest implements DataJsonConvertingForTest {
     private static final int PORT = 8888;
@@ -65,7 +67,7 @@ public class IntegrationTest implements DataJsonConvertingForTest {
     }
 
     @Test
-    public void execute_100transfers_per10000_to_10RandomAccounts_in30Threads_checkBalances() throws Exception {
+    public void execute_100transfers_per10000_to_10randomAccounts_in30threads_checkBalances() throws Exception {
         final var oneMillionReplenishAccountNumber = "Test99999";
         final var amount = BigDecimal.valueOf(1000000, 2);
         final var clientsId = List.of("Vadim", "Alina", "Ivan", "Natalia", "NataliaXXX", "Viktorai", "Aman", "Irina", "Nastja")
@@ -77,13 +79,13 @@ public class IntegrationTest implements DataJsonConvertingForTest {
                 .map(this::createAccount)
                 .collect(Collectors.toList());
 
-        IntStream.rangeClosed(1, 25)
+        IntStream.rangeClosed(1, 30)
                 .parallel()
                 .forEach(i -> accountsId.forEach(id -> makeTransfer("1", oneMillionReplenishAccountNumber, id, amount)));
 
         final Double actualReplenishAccountsSum = clientsId.stream().map(this::getAccountBalance).reduce(0D, Double::sum);
-        assertEquals(Double.valueOf(1000000), actualReplenishAccountsSum);
-        assertEquals(0D, getAccountBalance("1"), 0.1);
+        assertThat(actualReplenishAccountsSum, Is.is(1000000d));
+        assertThat(getAccountBalance("1"), Is.is(0D));
     }
 
 

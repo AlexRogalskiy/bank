@@ -4,6 +4,7 @@ import com.charges.model.Account;
 import com.charges.service.AccountService;
 import com.charges.validation.AccountValidation;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,8 +55,8 @@ public class AccountControllerForTest implements DataJsonConvertingForTest, Gene
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(expected, convertJsonToData(response.body(), Account.class, mapper));
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(convertJsonToData(response.body(), Account.class, mapper), Is.is(expected));
     }
 
     @Test
@@ -73,7 +74,7 @@ public class AccountControllerForTest implements DataJsonConvertingForTest, Gene
                 .build();
         final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertEquals(expected, convertJsonToData(response.body(), Account.class, mapper));
+        assertThat(response.statusCode(), Is.is(200));
+        assertThat(convertJsonToData(response.body(), Account.class, mapper), Is.is(expected));
     }
 }

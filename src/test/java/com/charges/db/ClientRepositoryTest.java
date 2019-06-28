@@ -3,12 +3,15 @@ package com.charges.db;
 import com.charges.model.Client;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class ClientRepositoryTest implements SqlSessionFactoryGenerate {
 
@@ -26,7 +29,7 @@ public class ClientRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var clients = clientRepository.getAllClients();
 
-            assertEquals(4, clients.size());
+            assertThat(clients.size(), Is.is(4));
         }
     }
 
@@ -38,7 +41,7 @@ public class ClientRepositoryTest implements SqlSessionFactoryGenerate {
             final var client = clientRepository.getClientById(1L);
 
             assertNotNull(client);
-            assertEquals(1, client.getAccounts().size());
+            assertThat(client.getAccounts().size(), Is.is(1));
         }
     }
 
@@ -49,7 +52,7 @@ public class ClientRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var client = clientRepository.getClientById(99L);
 
-            assertNull(client);
+            assertThat(client, Is.is(nullValue()));
         }
     }
 
@@ -65,8 +68,8 @@ public class ClientRepositoryTest implements SqlSessionFactoryGenerate {
             clientRepository.addClient(client);
             final var inserted = clientRepository.getClientById(client.getId());
 
-            assertNotNull(inserted);
-            assertEquals(newName, inserted.getName());
+            assertThat(inserted, Is.is(notNullValue()));
+            assertThat(inserted.getName(), Is.is(newName));
         }
     }
 }

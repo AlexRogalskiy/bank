@@ -3,14 +3,25 @@ package com.charges.db;
 import com.charges.model.Transfer;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.hamcrest.core.Is;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 
 public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
     protected static SqlSessionFactory sqlSessionFactory;
+
+    @Before
+    public void setUp() throws Exception {
+        sqlSessionFactory = getSqlSessionFactory();
+    }
 
     @Test
     public void getTransfersByClientId_clientId_validClient() {
@@ -19,9 +30,9 @@ public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var transfers = transferRepository.getTransfersByClientId(1L);
 
-            assertNotNull(transfers);
-            assertEquals(3, transfers.size());
-            assertEquals("Test99999", transfers.get(0).getAccountNumberTo());
+            assertThat(transfers, Is.is(notNullValue()));
+            assertThat(transfers.size(), Is.is(3));
+            assertThat(transfers.get(0).getAccountNumberTo(), Is.is("Test99999"));
         }
     }
 
@@ -32,7 +43,7 @@ public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var transfers = transferRepository.getTransfersByClientId(99L);
 
-            assertNotNull(transfers);
+            assertThat(transfers, Is.is(notNullValue()));
             assertTrue(transfers.isEmpty());
         }
     }
@@ -44,8 +55,8 @@ public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var transfer = transferRepository.getTransferByIdAndClientId(1L, 1L);
 
-            assertNotNull(transfer);
-            assertEquals("Test7777", transfer.getAccountNumberTo());
+            assertThat(transfer, Is.is(notNullValue()));
+            assertThat(transfer.getAccountNumberTo(), Is.is("Test7777"));
         }
     }
 
@@ -56,7 +67,7 @@ public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
 
             final var transfer = transferRepository.getTransferByIdAndClientId(99L, 99L);
 
-            assertNull(transfer);
+            assertThat(transfer, Is.is(nullValue()));
         }
     }
 
@@ -71,8 +82,8 @@ public class TransferRepositoryTest implements SqlSessionFactoryGenerate {
 
             transferRepository.addTransfer(transfer, 1L, 2L);
 
-            assertNotNull(transfer.getId());
-            assertNotNull(transferRepository.getTransferByIdAndClientId(1L, transfer.getId()));
+            assertThat(transfer.getId(), Is.is(notNullValue()));
+            assertThat(transferRepository.getTransferByIdAndClientId(1L, transfer.getId()), Is.is(notNullValue()));
         }
     }
 }
