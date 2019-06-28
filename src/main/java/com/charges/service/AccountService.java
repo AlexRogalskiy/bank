@@ -30,7 +30,7 @@ public class AccountService {
 
     @Transactional
     public Account insertAccount(final String clientId, final AccountValidation accountValidation) {
-        final var selectedClient = clientService.getClient(clientId);
+        final var selectedClient = clientService.getClientById(clientId);
         if (selectedClient == null) {
             halt(400, "Client not found");
         }
@@ -54,14 +54,6 @@ public class AccountService {
                 .build();
         accountRepository.updateAccount(account);
         return accountRepository.selectAccount(accountId);
-    }
-
-    @Transactional
-    public void deleteAccount(String pClientId, String pAccountId) {
-        final var clientId = Long.valueOf(pClientId);
-        final var accountId = Long.valueOf(pAccountId);
-        validateAccountId(clientId, accountId);
-        accountRepository.deleteAccount(accountId);
     }
 
     private void validateAccountId(Long clientId, Long accountId) {

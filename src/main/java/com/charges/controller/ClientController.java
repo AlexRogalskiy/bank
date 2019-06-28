@@ -17,17 +17,10 @@ public class ClientController implements DataJsonConverting<ClientValidation>, C
     public void configure(Service spark) {
         spark.get("/clients", (req, res) -> convertDataToJson(clientService.getClients(), mapper));
 
-        spark.get("/clients/:clientId", (req, res) -> convertDataToJson(clientService.getClient(req.params("clientId")), mapper));
+        spark.get("/clients/:clientId", (req, res) -> convertDataToJson(clientService.getClientById(req.params("clientId")), mapper));
 
         spark.post("/clients", (req, res) -> {
-            final var client = clientService.insertClient(converJsonToData(req.body(), ClientValidation.class, mapper));
-            return convertDataToJson(client, mapper);
-        });
-
-        spark.put("/clients/:clientId", (req, res) -> {
-            final var client = clientService.updateClient(req.params("clientId"),
-                    converJsonToData(req.body(),
-                            ClientValidation.class, mapper));
+            final var client = clientService.insertClient(convertJsonToData(req.body(), ClientValidation.class, mapper));
             return convertDataToJson(client, mapper);
         });
 

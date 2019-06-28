@@ -21,20 +21,15 @@ public class AccountController implements DataJsonConverting<AccountValidation>,
 
         spark.post("/clients/:clientId/accounts", (req, res) -> {
             final var account = accountService.insertAccount(req.params("clientId"),
-                    converJsonToData(req.body(), AccountValidation.class, mapper));
+                    convertJsonToData(req.body(), AccountValidation.class, mapper));
             return convertDataToJson(account, mapper);
         });
 
         spark.put("/clients/:clientId/accounts/:accountId", (req, res) -> {
             final var account = accountService.updateAccount(req.params("clientId"),
                     req.params("accountId"),
-                    converJsonToData(req.body(), AccountValidation.class, mapper));
+                    convertJsonToData(req.body(), AccountValidation.class, mapper));
             return convertDataToJson(account, mapper);
-        });
-
-        spark.delete("/clients/:clientId/accounts/:accountId", (req, res) -> {
-            accountService.deleteAccount(req.params("clientId"), req.params("accountId"));
-            return "";
         });
     }
 }

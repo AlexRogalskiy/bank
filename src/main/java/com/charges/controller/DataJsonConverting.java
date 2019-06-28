@@ -18,11 +18,11 @@ public interface DataJsonConverting<T> {
         }
     }
 
-    default T converJsonToData(final String json, final Class<T> clazz, final ObjectMapper mapper) {
+    default T convertJsonToData(final String json, final Class<T> clazz, final ObjectMapper mapper) {
         try {
             return mapper.readValue(json, clazz);
         } catch (final IOException e) {
-            throw new RuntimeException("IOException in converJsonToData method" + json, e);
+            throw new RuntimeException("IOException in convertJsonToData method" + json, e);
         }
     }
 }

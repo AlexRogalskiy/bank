@@ -22,11 +22,11 @@ public class TransferService {
     @Inject
     private TransferInnerService transferInnerService;
 
-    public List<Transfer> getTransfers(final String clientId) {
+    public List<Transfer> getTransfersByClientId(final String clientId) {
         return transferRepository.getTransfersByClient(Long.valueOf(clientId));
     }
 
-    public Transfer getTransfer(final String clientId, final String transferId) {
+    public Transfer getTransferByIdAndClientId(final String clientId, final String transferId) {
         final var transfer = transferRepository
                 .getTransfer(Long.valueOf(clientId), Long.valueOf(transferId));
 

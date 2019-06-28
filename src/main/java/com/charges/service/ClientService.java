@@ -20,7 +20,7 @@ public class ClientService {
         return clientRepository.getClients();
     }
 
-    public Client getClient(final String clientId) {
+    public Client getClientById(final String clientId) {
         return clientRepository.getClient(Long.valueOf(clientId));
     }
 
@@ -31,26 +31,6 @@ public class ClientService {
                 .build();
         clientRepository.insert(client);
         return clientRepository.getClient(client.getId());
-    }
-
-    @Transactional
-    public Client updateClient(final String pClientId,
-                               final ClientValidation clientValidation) {
-        final var clientId = Long.valueOf(pClientId);
-        validateClientId(clientId);
-        final var client = Client.builder()
-                .id(clientId)
-                .name(clientValidation.getName())
-                .build();
-        clientRepository.update(client);
-        return clientRepository.getClient(clientId);
-    }
-
-    @Transactional
-    public void deleteClient(final String pClientId) {
-        final var clientId = Long.valueOf(pClientId);
-        validateClientId(clientId);
-        clientRepository.delete(clientId);
     }
 
     private void validateClientId(final Long clientId) {

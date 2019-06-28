@@ -16,14 +16,14 @@ public class TransferController implements DataJsonConverting<TransferValidation
     @Override
     public void configure(Service spark) {
         spark.get("/clients/:clientId/transfers", (req, res) ->
-                convertDataToJson(transferService.getTransfers(req.params("clientId")), mapper));
+                convertDataToJson(transferService.getTransfersByClientId(req.params("clientId")), mapper));
 
         spark.get("/clients/:clientId/transfers/:transferId", (req, res) ->
-                convertDataToJson(transferService.getTransfer(req.params("clientId"), req.params("transferId")), mapper));
+                convertDataToJson(transferService.getTransferByIdAndClientId(req.params("clientId"), req.params("transferId")), mapper));
 
         spark.post("/clients/:clientId/transfers", (req, res) -> {
             final var transfer = transferService.createTransfer(req.params("clientId"),
-                    converJsonToData(req.body(), TransferValidation.class, mapper));
+                    convertJsonToData(req.body(), TransferValidation.class, mapper));
             return convertDataToJson(transfer, mapper);
         });
 
