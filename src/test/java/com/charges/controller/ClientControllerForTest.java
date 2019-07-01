@@ -84,7 +84,7 @@ public class ClientControllerForTest implements DataJsonConvertingForTest, Gener
         final var input = ClientValidation.builder()
                 .name("Ivan Ivanov")
                 .build();
-        when(clientService.insertClient(input)).thenReturn(expected);
+        when(clientService.addClient(input)).thenReturn(expected);
 
         final var request = HttpRequest.newBuilder(URI.create(URL + "/clients"))
                 .POST(HttpRequest.BodyPublishers.ofString(convertDataToJson(input, mapper)))

@@ -18,22 +18,22 @@ public class TransferInnerService {
     private TransferRepository transferRepository;
 
     @Transactional
-    public Long createTransfer(final Long clientId,
-                               final TransferValidation transferValidation) {
-        final var fromAccount = accountService.getAccountByNumber(transferValidation.getAccountNumberFrom());
+    public Long createValidTransfer(final Long clientId,
+                                    final TransferValidation transferValidation) {
+        final var accountFrom = accountService.getAccountByNumber(transferValidation.getAccountNumberFrom());
         if (transferValidation.getAmount().compareTo(BigDecimal.ZERO) <= 0)
             halt(400, "Amount cant be zero");
 
-        if (fromAccount == null)
+        if (accountFrom == null)
             halt(400, "Cant find account from");
 
-        if (!fromAccount.getClientId().equals(clientId))
+        if (!accountFrom.getClientId().equals(clientId))
             halt(400, "From account do not belong to user");
 
-        final var accountNumberTo = accountService
+        final var accountTo = accountService
                 .getAccountByNumber(transferValidation.getAccountNumberTo());
 
-        if (accountNumberTo == null) {
+        if (accountTo == null) {
             halt(400, "AccountNumberTo not found");
         }
 
@@ -42,7 +42,7 @@ public class TransferInnerService {
                 .clientId(clientId)
                 .build();
 
-        transferRepository.addTransfer(transfer, fromAccount.getId(), accountNumberTo.getId());
+        transferRepository.addTransfer(transfer, accountFrom.getId(), accountTo.getId());
 
         return transfer.getId();
     }
@@ -58,7 +58,7 @@ public class TransferInnerService {
         final var accountNumberTo = accountService.getAccountByNumber(transfer.getAccountNumberTo());
 
         if (accountNumberFrom.getBalance().compareTo(transfer.getAmount()) < 0)
-            halt(400, "Account cant be less zero");
+            halt(400, "Account cant be less or equal zero");
 
         accountService.updateBalance(accountNumberFrom.getId(),
                 accountNumberFrom.getBalance().subtract(transfer.getAmount()));

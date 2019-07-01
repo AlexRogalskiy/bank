@@ -25,7 +25,7 @@ public class ClientService {
     }
 
     @Transactional
-    public Client insertClient(final ClientValidation clientValidation) {
+    public Client addClient(final ClientValidation clientValidation) {
         final var client = Client.builder()
                 .name(clientValidation.getName())
                 .build();

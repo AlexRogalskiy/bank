@@ -34,7 +34,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.inject.Guice.createInjector;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class IntegrationTest implements DataJsonConvertingForTest {
@@ -67,24 +68,31 @@ public class IntegrationTest implements DataJsonConvertingForTest {
     }
 
     @Test
-    public void execute_100transfers_per10000_to_10randomAccounts_in30threads_checkBalances() throws Exception {
-        final var oneMillionReplenishAccountNumber = "Test99999";
-        final var amount = BigDecimal.valueOf(1000000, 2);
-        final var clientsId = List.of("Vadim", "Alina", "Ivan", "Natalia", "NataliaXXX", "Viktorai", "Aman", "Irina", "Nastja")
+    public void generateAndExecute_100transfers_per10000_to_5randomAccounts_in20threads_checkBalances() throws Exception {
+        final var oneMillionAccountFromNumber = "Test99999";
+        assertEquals(1_000_000d, getAccountBalance("1"), 0.1);
+        final var amountToTransfer = BigDecimal.valueOf(1_000_000, 2);
+        final var clientsId = List.of("Vadim", "Alina", "Ivan", "Natalia", "John")
                 .stream()
                 .map(this::createClient)
                 .collect(Collectors.toList());
-        final var accountsId = clientsId
+
+        final var replenishAccountsId = clientsId
                 .stream()
-                .map(this::createAccount)
+                .map((String clientId) -> createAccount2(clientId, "Account" + clientId))
                 .collect(Collectors.toList());
 
-        IntStream.rangeClosed(1, 30)
+        IntStream.rangeClosed(1, 20)
                 .parallel()
-                .forEach(i -> accountsId.forEach(id -> makeTransfer("1", oneMillionReplenishAccountNumber, id, amount)));
+                .forEach(i -> replenishAccountsId
+                        .forEach(id -> createAndExecuteTransfer("1", oneMillionAccountFromNumber, id, amountToTransfer)));
 
-        final Double actualReplenishAccountsSum = clientsId.stream().map(this::getAccountBalance).reduce(0D, Double::sum);
-        assertThat(actualReplenishAccountsSum, Is.is(1000000d));
+        final double actualReplenishAccountsSum = clientsId
+                .stream()
+                .map(this::getAccountBalance)
+                .reduce(0D, Double::sum);
+
+        assertEquals(1_000_000d, actualReplenishAccountsSum, 0.1);
         assertThat(getAccountBalance("1"), Is.is(0D));
     }
 
@@ -135,15 +143,31 @@ public class IntegrationTest implements DataJsonConvertingForTest {
         }
     }
 
-    private void makeTransfer(final String clientId,
-                              final String fromAccountName,
-                              final String toAccountName,
-                              final BigDecimal amount) {
+    private String createAccount2(final String clientId, String accountNumber) {
+        final var input = AccountValidation.builder()
+                .number(accountNumber)
+                .build();
+        try {
+            final var request = HttpRequest.newBuilder(URI.create(URL + "/clients/" + clientId + "/accounts"))
+                    .POST(HttpRequest.BodyPublishers.ofString(convertDataToJson(input, mapper)))
+                    .build();
+            final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            final var account = (Account) convertJsonToData(response.body(), Account.class, mapper);
+            return account.getNumber();
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    private void createAndExecuteTransfer(final String clientId,
+                                          final String fromAccountNumber,
+                                          final String toAccountNumber,
+                                          final BigDecimal amount) {
         final var input = TransferValidation.builder()
                 .amount(amount)
-                .accountNumberFrom(fromAccountName)
-                .accountNumberTo(toAccountName)
+                .accountNumberFrom(fromAccountNumber)
+                .accountNumberTo(toAccountNumber)
                 .build();
         try {
             final var request = HttpRequest.newBuilder(URI.create(URL + "/clients/" + clientId + "/transfers"))

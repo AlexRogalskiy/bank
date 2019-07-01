@@ -40,7 +40,7 @@ public class TransferService {
             reentrantLock.lock();
 
             final var transferId = transferInnerService
-                    .createTransfer(Long.valueOf(clientId), transferValidation);
+                    .createValidTransfer(Long.valueOf(clientId), transferValidation);
 
             return transferRepository.getTransferByIdAndClientId(Long.valueOf(clientId), transferId);
 
